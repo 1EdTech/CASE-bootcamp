@@ -1,0 +1,261 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model CFAssociation {
+  identifier                      String   @id @default(uuid())
+  associationType                 String
+  sequenceNumber                  Int?
+  uri                             String   @unique
+  lastChangeDateTime              DateTime @updatedAt
+  originNodeIdentifier            String
+  destinationNodeIdentifier       String
+  cfAssociationGroupingIdentifier String?
+  notes                           String?
+  cfDocumentIdentifier            String
+
+  originNode                      CFLinkGenURI @relation("OriginDocument", fields: [originNodeIdentifier], references: [identifier])
+  destinationNode                 CFLinkGenURI @relation("DestinationDocument", fields: [destinationNodeIdentifier], references: [identifier])
+  cfAssociationGrouping           CFAssociationGrouping? @relation(fields: [cfAssociationGroupingIdentifier], references: [identifier])
+  cfDocument                      CFDocument @relation(fields: [cfDocumentIdentifier], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_associations")
+}
+
+model CFAssociationGrouping {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  title              String
+  description        String?
+  lastChangeDateTime DateTime @updatedAt
+  cfPackageIdentifier             String
+
+  cfAssociations     CFAssociation[]
+  cfPackage                       CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_association_groupings")
+}
+
+model CFConcept {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  title              String
+  keywords           String[]
+  hierarchyCode      String
+  description        String?
+  lastChangeDateTime DateTime @updatedAt
+  cfPackageIdentifier             String
+
+  cfPackage                       CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_concepts")
+}
+
+model CFDocument {
+  identifier              String       @id @default(uuid())
+  uri                     String       @unique
+  frameworkType           String?
+  caseVersion             String?
+  creator                 String
+  title                   String
+  lastChangeDateTime      DateTime     @updatedAt
+  officialSourceURL       String?
+  publisher               String?
+  description             String?
+  subject                 String[]
+  subjects                LinkUri[]    @relation("SubjectDocument")
+  language                String?
+  version                 String?
+  adoptionStatus          String?
+  statusStartDate         DateTime?
+  statusEndDate           DateTime?
+  licenseIdentifier       String?
+  notes                   String?
+  cfPackageIdentifier     String       @unique
+  cfPackageUriIdentifier  String       @unique
+
+  cfItems                 CFItem[]
+  cfAssociations          CFAssociation[]
+  cfPackage               CFPackage    @relation(fields: [cfPackageIdentifier], references: [identifier])
+  cfLicense               CFLicense?   @relation(fields: [licenseIdentifier], references: [identifier], onDelete: SetNull)
+  packageUri              LinkUri      @relation("PackageDocument", fields: [cfPackageUriIdentifier], references: [identifier])
+
+  @@map("cf_documents")
+}
+
+model CFItem {
+  identifier               String   @id @default(uuid())
+  fullStatement            String
+  alternativeLabel         String?
+  cfItemType               String?
+  uri                      String   @unique
+  humanCodingScheme        String?
+  listEnumeration          String?
+  abbreviatedStatement     String?
+  conceptKeywords          String[]
+  notes                    String?
+  subject                  String[]
+  language                 String?
+  educationLevel           String[]
+  statusStartDate          DateTime?
+  statusEndDate            DateTime?
+  lastChangeDateTime       DateTime @updatedAt
+  licenseURIIdentifier     String?
+  cfItemTypeURIIdentifier  String?  @unique
+  cfDocumentIdentifier     String
+
+  cfDocument               CFDocument @relation(fields: [cfDocumentIdentifier], references: [identifier], onDelete: Cascade)
+  cfRubricCriteria         CFRubricCriterion[]
+  conceptKeywordsURI       LinkUri[] @relation("ConceptKeywordsItem")
+  subjectURI               LinkUri[] @relation("SubjectItem")
+  licenseURI               LinkUri? @relation("LicenseItem", fields: [licenseURIIdentifier], references: [identifier])
+  cfItemTypeUri            LinkUri? @relation("TypeItem", fields: [cfItemTypeURIIdentifier], references: [identifier])
+
+  @@map("cf_items")
+}
+
+model CFItemType {
+  identifier          String   @id @default(uuid())
+  uri                 String   @unique
+  title               String
+  description         String
+  hierarchyCode       String
+  typeCode            String?
+  lastChangeDateTime  DateTime @updatedAt
+  cfPackageIdentifier String
+
+  cfPackage           CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_item_types")
+}
+
+model CFLicense {
+  identifier            String   @id @default(uuid())
+  uri                   String   @unique
+  title                 String
+  description           String?
+  licenseText           String
+  lastChangeDateTime    DateTime @updatedAt
+  cfPackageIdentifier   String
+
+  cfPackage             CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+  cfDocuments            CFDocument[]
+
+  @@map("cf_licenses")
+}
+
+model CFPackage {
+  identifier              String   @id @default(uuid())
+  lastChangeDateTime      DateTime @updatedAt
+
+  document                CFDocument?
+
+  cfConcepts              CFConcept[]
+  cfItemTypes             CFItemType[]
+  cfLicenses              CFLicense[]
+  cfRubrics               CFRubric[]
+  cfSubjects              CFSubject[]
+  cfAssociationGroupings  CFAssociationGrouping[]
+
+  @@map("cf_packages")
+}
+
+model CFRubric {
+  identifier          String   @id @default(uuid())
+  uri                 String   @unique
+  title               String?
+  description         String?
+  lastChangeDateTime  DateTime @updatedAt
+  cfPackageIdentifier String
+
+  cfPackage           CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+  cfRubricCriteria    CFRubricCriterion[]
+
+  @@map("cf_rubrics")
+}
+
+model CFRubricCriterion {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  category           String?
+  description        String?
+  cfItemIdentifier   String?
+  weight             Float?
+  position           Int?
+  cfRubricIdentifier String
+  lastChangeDateTime DateTime @updatedAt
+
+  cfRubric           CFRubric @relation(fields: [cfRubricIdentifier], references: [identifier], onDelete: Cascade)
+  cfItem             CFItem? @relation(fields: [cfItemIdentifier], references: [identifier], onDelete: SetNull)
+  CFRubricCriterionLevels CFRubricCriterionLevel[]
+
+  @@map("cf_rubric_criteria")
+}
+
+model CFRubricCriterionLevel {
+  identifier              String   @id @default(uuid())
+  uri                     String   @unique
+  description             String?
+  quality                 String?
+  score                   Float?
+  feedback                String?
+  position                Int?
+  rubricCriterionId       String
+  lastChangeDateTime      DateTime @updatedAt
+
+  cfRubricCriterion      CFRubricCriterion @relation(fields: [rubricCriterionId], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_rubric_criterion_levels")
+}
+
+
+model CFSubject {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  title              String
+  hierarchyCode      String
+  description        String?
+  lastChangeDateTime DateTime @updatedAt
+
+  cfPackageIdentifier String
+
+  cfPackage           CFPackage @relation(fields: [cfPackageIdentifier], references: [identifier], onDelete: Cascade)
+
+  @@map("cf_subjects")
+}
+
+model CFLinkGenURI {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  title              String
+  targetType         String?
+
+  originAssociation        CFAssociation[] @relation("OriginDocument")
+  destinationAssociation   CFAssociation[] @relation("DestinationDocument")
+
+  @@map("cf_link_gen_uris")
+}
+
+model LinkUri {
+  identifier         String   @id @default(uuid())
+  uri                String   @unique
+  title              String
+  subjectDocumentId  String?
+  keywordItemId      String?
+  licenseItemId      String?
+  subjectItemId      String?
+
+  subjectDocument         CFDocument? @relation("SubjectDocument", fields: [subjectDocumentId], references: [identifier])
+  subjectItem             CFItem? @relation("SubjectItem", fields: [subjectItemId], references: [identifier], map: "fk_cf_link_uris_subject_item")
+  keywordItem             CFItem? @relation("ConceptKeywordsItem", fields: [keywordItemId], references: [identifier], map: "fk_cf_link_uris_keyword_item")
+  licenseItem             CFItem[] @relation("LicenseItem")
+  typeItem                CFItem? @relation("TypeItem")
+  packageDocument         CFDocument? @relation("PackageDocument")
+
+  @@map("cf_link_uris")
+}
