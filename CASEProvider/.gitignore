@@ -3,8 +3,5 @@ dist/
 *.log
 .DS_Store
 
-# Prisma
-prisma/migrations/
-
 # Docker
 .dockerignore
