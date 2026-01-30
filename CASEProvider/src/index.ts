@@ -19,7 +19,7 @@ app.get('/health', (req, res) => {
 app.get('/', (req, res) => {
   res.json({
     service: 'CASE Provider v1.1',
-    specification: 'https://purl.imsglobal.org/spec/case/v1p1',
+    specification: 'https://www.imsglobal.org/spec/case/v1p1',
   });
 });
 
