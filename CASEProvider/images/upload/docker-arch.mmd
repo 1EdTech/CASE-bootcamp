@@ -1,0 +1,20 @@
+flowchart LR
+    host[Host machine]:::host
+
+    subgraph compose["docker-compose (v3.8)"]
+        db["db (case-provider-db)\nimage: postgres:16-alpine\nports: 5432:5432\nhealthcheck: pg_isready"]:::db
+        app["app (case-provider-app)\nbuild: Dockerfile\nports: 3000:3000\nenv: DATABASE_URL, PORT"]:::app
+        volume["volume: postgres_data"]:::vol
+        bindmount["bind mount: ./data:/app/data (ro)"]:::vol
+    end
+
+    app -->|depends_on: healthy| db
+    db --- volume
+    host <-->|3000/tcp| app
+    host <-->|5432/tcp| db
+    app --- bindmount
+
+    classDef host fill:#f6f6f6,stroke:#888,stroke-width:1px,color:#222;
+    classDef app fill:#e0f3ff,stroke:#0077cc,stroke-width:1.5px,color:#0b3c5d;
+    classDef db fill:#fcefe3,stroke:#d27b2f,stroke-width:1.5px,color:#7a3f00;
+    classDef vol fill:#eef5e6,stroke:#6c9a1f,stroke-width:1.2px,color:#3f5d0d;
