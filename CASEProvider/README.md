@@ -99,7 +99,9 @@ The server will start on `http://localhost:3000` (or the PORT specified in your 
 
 - `GET /` - Service information
 - `GET /health` - Health check
-- `GET /ims/case/v1p1/openapi.json` - OpenAPI specification
+- `POST /upload` - Add Packages from a CSV file
+- `POST /upload/items` - Add Items from a CSV file
+- `POST /upload/associations` - Add Associations from a CSV file
 
 ## Database Management
 
@@ -124,11 +126,14 @@ yarn prisma:migrate
 ```sh
 CASEProvider/
 ├── prisma/
+│   ├── migrations/            # Database migrations
 │   └── schema.prisma          # Database schema
 ├── src/
 │   ├── index.ts               # Application entry point
 │   ├── lib/
 │   │   ├── prisma.ts          # Prisma client
+│   ├── routes/
+│   │   ├── upload.ts          # Upload routes
 ├── package.json
 ├── tsconfig.json
 └── README.md
