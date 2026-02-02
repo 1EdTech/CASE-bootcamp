@@ -287,7 +287,7 @@ router.post("/associations/upload", async (req, res) => {
             create: {
               identifier: randomUUID(),
               uri: origin.uri,
-              title: `CFItem ${origin.identifier}`,
+              title: `${origin.humanCodingScheme}: ${origin.abbreviatedStatement} || ${origin.fullStatement}`,
               targetType: "CASE",
             },
           },
@@ -300,7 +300,7 @@ router.post("/associations/upload", async (req, res) => {
             create: {
               identifier: randomUUID(),
               uri: destination.uri,
-              title: `CFItem ${destination.identifier}`,
+              title: `${destination.humanCodingScheme}: ${destination.abbreviatedStatement} || ${destination.fullStatement}`,
               targetType: "CASE",
             },
           },
