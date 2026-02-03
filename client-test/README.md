@@ -55,7 +55,7 @@ The CASE service port:
 The web server port:
 
 - Default: `8081`
-- Example: `export PORT=3000`
+- Example: `export PORT=8081`
 
 ## Usage
 
@@ -75,9 +75,6 @@ Once running, the test report will be available at:
 ```bash
 docker build -t case-client-test .
 docker run -p 8081:8081 -e CASE_HOST=your-host:port case-client-test
-
-# With custom port
-docker run -p 3000:3000 -e PORT=3000 -e CASE_HOST=your-host:port case-client-test
 ```
 
 ## Project Structure
