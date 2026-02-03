@@ -3,6 +3,13 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { uploadRouter } from './routes/upload';
 import { nullValueCleanup } from './middlewares/json';
+import { BASE_PATH } from './routes/constants';
+import { associationsRouter } from './routes/associations';
+import { definitionsRouter } from './routes/definitions';
+import { documentsRouter } from './routes/documents';
+import { itemsRouter } from './routes/items';
+import { packagesRouter } from './routes/packages';
+import { rubricsRouter } from './routes/rubrics';
 
 dotenv.config();
 
@@ -15,6 +22,12 @@ app.use(nullValueCleanup);
 
 // Mount routers
 app.use("/", uploadRouter);
+app.use(BASE_PATH, associationsRouter);
+app.use(BASE_PATH, definitionsRouter);
+app.use(BASE_PATH, documentsRouter);
+app.use(BASE_PATH, itemsRouter);
+app.use(BASE_PATH, packagesRouter);
+app.use(BASE_PATH, rubricsRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {

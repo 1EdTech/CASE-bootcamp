@@ -5,6 +5,7 @@ A complete implementation of the **Competencies and Academic Standards Exchange 
 This implementation follows the CASE v1.1 specification from 1EdTech:
 
 - Specification URL: <https://purl.imsglobal.org/spec/case/v1p1>
+- OpenAPI Definition: <https://purl.imsglobal.org/spec/case/v1p1/schema/openapi/imscasev1p1_openapi2_v1p0.json>
 
 ## Overview
 
@@ -14,6 +15,14 @@ This service provides a REST API that implements the CASE v1.1 specification fro
 
 - ✅ PostgreSQL database with Prisma ORM
 - ✅ TypeScript for type safety
+- ✅ Six manager endpoints:
+  - **AssociationsManager**: Manage CFAssociations
+  - **DefinitionsManager**: Manage CFConcepts, CFSubjects, CFLicenses, CFItemTypes, CFAssociationGroupings
+  - **DocumentsManager**: Manage CFDocuments
+  - **ItemsManager**: Manage CFItems
+  - **PackagesManager**: Manage CFPackages
+  - **RubricsManager**: Manage CFRubrics and CFRubricCriteria
+- ✅ OpenAPI specification endpoint at `/ims/case/v1p1/openapi.json`
 
 ## Prerequisites
 
@@ -95,6 +104,43 @@ The server will start on `http://localhost:3000` (or the PORT specified in your 
 
 ## API Endpoints
 
+### Base Path
+
+All CASE API endpoints are prefixed with: `/ims/case/v1p1`
+
+### Available Endpoints
+
+#### Associations Manager
+
+- `GET /ims/case/v1p1/CFAssociations/{sourcedId}` - Get a specific association
+
+#### Definitions Manager
+
+- `GET /ims/case/v1p1/CFAssociationGroupings/{sourcedId}` - Get an association grouping
+- `GET /ims/case/v1p1/CFConcepts/{sourcedId}` - Get a concept
+- `GET /ims/case/v1p1/CFSubjects/{sourcedId}` - Get a subject
+- `GET /ims/case/v1p1/CFLicenses/{sourcedId}` - Get a license
+- `GET /ims/case/v1p1/CFItemTypes/{sourcedId}` - Get an item type
+
+#### Documents Manager
+
+- `GET /ims/case/v1p1/CFDocuments` - List all documents
+- `GET /ims/case/v1p1/CFDocuments/{sourcedId}` - Get a specific document
+
+#### Items Manager
+
+- `GET /ims/case/v1p1/CFItems` - List all items
+- `GET /ims/case/v1p1/CFItems/{sourcedId}` - Get a specific item
+
+#### Packages Manager
+
+- `GET /ims/case/v1p1/CFPackages/{sourcedId}` - Get a package
+
+#### Rubrics Manager
+
+- `GET /ims/case/v1p1/CFRubrics/{sourcedId}` - Get a rubric
+- `GET /ims/case/v1p1/CFRubricCriteria/{sourcedId}` - Get rubric criteria
+
 #### Utilities
 
 - `GET /` - Service information
@@ -128,12 +174,23 @@ CASEProvider/
 ├── prisma/
 │   ├── migrations/            # Database migrations
 │   └── schema.prisma          # Database schema
+├── public/
+│   └── openapi-spec.json      # CASE v1.1 OpenAPI specification
 ├── src/
 │   ├── index.ts               # Application entry point
 │   ├── lib/
+│   │   ├── errors.ts          # Error handling utilities
 │   │   ├── prisma.ts          # Prisma client
+│   │   └── validation.ts      # Validation utilities
 │   ├── routes/
-│   │   ├── upload.ts          # Upload routes
+│       ├── associations.ts    # Associations endpoints
+│       ├── definitions.ts     # Definitions endpoints
+│       ├── documents.ts       # Documents endpoints
+│       ├── items.ts           # Items endpoints
+│       ├── packages.ts        # Packages endpoints
+│       ├── rubrics.ts         # Rubrics endpoints
+│       ├── spec.ts            # OpenAPI spec endpoint
+│       └── upload.ts          # Upload endpoints
 ├── package.json
 ├── tsconfig.json
 └── README.md
