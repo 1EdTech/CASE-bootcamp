@@ -3,6 +3,6 @@ RUN apk --no-cache add curl
 WORKDIR /usr/src/app
 COPY package*.json ./
 COPY ./postman ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 COPY . .
 ENTRYPOINT [ "node", "app.js" ]
