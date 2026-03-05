@@ -5,6 +5,11 @@ import { validateSourcedId } from '../lib/validation';
 
 const router = Router();
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework Item. If the identified record cannot be found then
+ * the 'unknownobject' status code must be reported.
+ */
 // GET /CFItems/{sourcedId}
 router.get('/CFItems/:sourcedId', validateSourcedId, async (req, res) => {
   try {

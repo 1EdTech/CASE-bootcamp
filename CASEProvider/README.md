@@ -113,14 +113,15 @@ All CASE API endpoints are prefixed with: `/ims/case/v1p1`
 #### Associations Manager
 
 - `GET /ims/case/v1p1/CFAssociations/{sourcedId}` - Get a specific association
+- `GET /ims/case/v1p1/CFItemAssociations/{sourcedId}` - Get the associations of the given CFItem
 
 #### Definitions Manager
 
-- `GET /ims/case/v1p1/CFAssociationGroupings/{sourcedId}` - Get an association grouping
 - `GET /ims/case/v1p1/CFConcepts/{sourcedId}` - Get a concept
 - `GET /ims/case/v1p1/CFSubjects/{sourcedId}` - Get a subject
 - `GET /ims/case/v1p1/CFLicenses/{sourcedId}` - Get a license
 - `GET /ims/case/v1p1/CFItemTypes/{sourcedId}` - Get an item type
+- `GET /ims/case/v1p1/CFAssociationGroupings/{sourcedId}` - Get an association grouping
 
 #### Documents Manager
 
@@ -129,7 +130,6 @@ All CASE API endpoints are prefixed with: `/ims/case/v1p1`
 
 #### Items Manager
 
-- `GET /ims/case/v1p1/CFItems` - List all items
 - `GET /ims/case/v1p1/CFItems/{sourcedId}` - Get a specific item
 
 #### Packages Manager
@@ -139,7 +139,6 @@ All CASE API endpoints are prefixed with: `/ims/case/v1p1`
 #### Rubrics Manager
 
 - `GET /ims/case/v1p1/CFRubrics/{sourcedId}` - Get a rubric
-- `GET /ims/case/v1p1/CFRubricCriteria/{sourcedId}` - Get rubric criteria
 
 #### Utilities
 

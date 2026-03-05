@@ -6,6 +6,11 @@ import { mapRubric, mapRubricCriteria } from '../mappers/rubrics';
 
 const router = Router();
 
+/**
+ * This is a request to the service provider to provide the information for
+ * the specific Competency Framework Rubric. If the identified record cannot be
+ * found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFRubrics/{sourcedId}
 router.get('/CFRubrics/:sourcedId', validateSourcedId, async (req, res) => {
   try {

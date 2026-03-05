@@ -7,6 +7,11 @@ import { constructFilter } from "../lib/filter";
 
 const router = Router();
 
+/**
+ * This is a request to the Service Provider to provide the information for the
+ * specific Competency Framework Document. If the identified record cannot
+ * be found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFDocuments/{sourcedId}
 router.get("/CFDocuments/:sourcedId", validateSourcedId, async (req, res) => {
   try {
@@ -32,6 +37,10 @@ router.get("/CFDocuments/:sourcedId", validateSourcedId, async (req, res) => {
   }
 });
 
+/**
+ * This is a request to the Service Provider to provide all of the Competency
+ * Framework Documents.
+ */
 // GET /CFDocuments - List all documents
 router.get("/CFDocuments", async (req, res) => {
   try {

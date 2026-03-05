@@ -12,6 +12,11 @@ import {
 
 const router = Router();
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework Association Grouping. If the identified record
+ * cannot be found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFAssociationGroupings/{sourcedId}
 router.get(
   "/CFAssociationGroupings/:sourcedId",
@@ -36,6 +41,12 @@ router.get(
   },
 );
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework Concept and the set of children CFConcepts
+ * as identified by the hierarchy codes. If the identified record cannot be
+ * found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFConcepts/{sourcedId}
 router.get("/CFConcepts/:sourcedId", validateSourcedId, async (req, res) => {
   try {
@@ -81,6 +92,12 @@ router.get("/CFConcepts/:sourcedId", validateSourcedId, async (req, res) => {
   }
 });
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework Subject and the set of children CFSubjects as
+ * identified by the hierarchy codes. If the identified record cannot be
+ * found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFSubjects/{sourcedId}
 router.get("/CFSubjects/:sourcedId", validateSourcedId, async (req, res) => {
   try {
@@ -125,6 +142,11 @@ router.get("/CFSubjects/:sourcedId", validateSourcedId, async (req, res) => {
   }
 });
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework License. If the identified record cannot be found then
+ * the 'unknownobject' status code must be reported.
+ */
 // GET /CFLicenses/{sourcedId}
 router.get("/CFLicenses/:sourcedId", validateSourcedId, async (req, res) => {
   try {
@@ -145,6 +167,12 @@ router.get("/CFLicenses/:sourcedId", validateSourcedId, async (req, res) => {
   }
 });
 
+/**
+ * This is a request to the Service Provider to provide the specified
+ * Competency Framework Item Type and the set of children CFItemTypes as
+ * identified by the hierarchy codes. If the identified record cannot be
+ * found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFItemTypes/{sourcedId}
 router.get("/CFItemTypes/:sourcedId", validateSourcedId, async (req, res) => {
   try {

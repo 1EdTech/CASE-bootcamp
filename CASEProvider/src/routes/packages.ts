@@ -6,6 +6,11 @@ import { mapPackage } from '../mappers/packages';
 
 const router = Router();
 
+/**
+ * This is a request to the service provider to provide the information for the
+ * specific Competency Framework Package. If the identified record cannot be
+ * found then the 'unknownobject' status code must be reported.
+ */
 // GET /CFPackages/{sourcedId}
 router.get('/CFPackages/:sourcedId', validateSourcedId, async (req, res) => {
   try {
