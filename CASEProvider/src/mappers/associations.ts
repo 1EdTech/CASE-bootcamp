@@ -1,3 +1,12 @@
+import { mapItem } from "./items";
+
+export function mapAssociations(item: any, records: any[]) {
+  return {
+    CFItem: mapItem(item),
+    CFAssociations: records.map(mapAssociation),
+  };
+}
+
 export function mapAssociation(record: any) {
     const association: any = {
         identifier: record.identifier,
