@@ -60,25 +60,14 @@ router.get("/CFConcepts/:sourcedId", validateSourcedId, async (req, res) => {
       return errors.notFound(res);
     }
 
-    // add all child concepts
-    // 1. Get associations where associationType is "isChildOf" and destinationNode is concept.uri
-    const childAssociations = await prisma.cFAssociation.findMany({
-      where: {
-        associationType: "isChildOf",
-        destinationNode: {
-          uri: concept.uri,
-        },
-      },
-      include: {
-        originNode: true,
-      },
-    });
-
-    // 2. Find cfConcepts whose uri is in the originNode.uri of the associations
+    // add all child concepts, as identified by the hierarchy codes
     const childCfConcepts = await prisma.cFConcept.findMany({
       where: {
-        uri: {
-          in: childAssociations.map((assoc) => assoc.originNode.uri),
+        hierarchyCode: {
+          startsWith: concept.hierarchyCode,
+        },
+        identifier: {
+          not: concept.identifier,
         },
       },
     });
@@ -111,25 +100,14 @@ router.get("/CFSubjects/:sourcedId", validateSourcedId, async (req, res) => {
       return errors.notFound(res);
     }
 
-    // add all child subjects
-    // 1. Get associations where associationType is "isChildOf" and destinationNode is subject.uri
-    const childAssociations = await prisma.cFAssociation.findMany({
-      where: {
-        associationType: "isChildOf",
-        destinationNode: {
-          uri: subject.uri,
-        },
-      },
-      include: {
-        originNode: true,
-      },
-    });
-
-    // 2. Find cfSubjects whose uri is in the originNode.uri of the associations
+    // add all child subjects, as identified by the hierarchy codes
     const childCfSubjects = await prisma.cFSubject.findMany({
       where: {
-        uri: {
-          in: childAssociations.map((assoc) => assoc.originNode.uri),
+        hierarchyCode: {
+          startsWith: subject.hierarchyCode,
+        },
+        identifier: {
+          not: subject.identifier,
         },
       },
     });
@@ -186,25 +164,14 @@ router.get("/CFItemTypes/:sourcedId", validateSourcedId, async (req, res) => {
       return errors.notFound(res);
     }
 
-    // add all child item types
-    // 1. Get associations where associationType is "isChildOf" and destinationNode is itemType.uri
-    const childAssociations = await prisma.cFAssociation.findMany({
-      where: {
-        associationType: "isChildOf",
-        destinationNode: {
-          uri: itemType.uri,
-        },
-      },
-      include: {
-        originNode: true,
-      },
-    });
-
-    // 2. Find cfItemTypes whose uri is in the originNode.uri of the associations
+    // add all child item types, as identified by the hierarchy codes
     const childCfItemTypes = await prisma.cFItemType.findMany({
       where: {
-        uri: {
-          in: childAssociations.map((assoc) => assoc.originNode.uri),
+        hierarchyCode: {
+          startsWith: itemType.hierarchyCode,
+        },
+        identifier: {
+          not: itemType.identifier,
         },
       },
     });
