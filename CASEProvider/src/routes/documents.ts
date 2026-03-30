@@ -23,6 +23,7 @@ router.get("/CFDocuments/:sourcedId", validateSourcedId, async (req, res) => {
         subjects: true,
         cfLicense: true,
         cfPackage: true,
+        packageUri: true,
       },
     });
 
@@ -94,7 +95,12 @@ router.get("/CFDocuments", async (req, res) => {
       skip: parseInt(offset as string, 10),
       take: parseInt(limit as string, 10),
       orderBy: orderByOptions,
-      select: select,
+      include: {
+        subjects: true,
+        cfLicense: true,
+        cfPackage: true,
+        packageUri: true,
+      },
     });
 
     res.json(mapDocuments(documents));
