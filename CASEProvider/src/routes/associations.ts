@@ -52,6 +52,12 @@ router.get('/CFItemAssociations/:sourcedId', validateSourcedId, async (req, res)
 
     const item = await prisma.cFItem.findUnique({
       where: { identifier: sourcedId },
+      include: {
+        conceptKeywordsURI: true,
+        subjectURI: true,
+        cfItemTypeUri: true,
+        licenseURI: true,
+      },
     });
 
     console.log('Fetched item with associations:', item);
@@ -70,6 +76,11 @@ router.get('/CFItemAssociations/:sourcedId', validateSourcedId, async (req, res)
             uri: item.uri,
           } },
         ]
+      },
+      include: {
+        originNode: true,
+        destinationNode: true,
+        cfAssociationGrouping: true,
       },
     });
     res.json(mapAssociations(item, associations));
