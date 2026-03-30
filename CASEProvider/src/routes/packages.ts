@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import prisma from '../lib/prisma';
-import { errors } from '../lib/errors';
-import { validateSourcedId } from '../lib/validation';
-import { mapPackage } from '../mappers/packages';
+import { Router } from "express";
+import prisma from "../lib/prisma";
+import { errors } from "../lib/errors";
+import { validateSourcedId } from "../lib/validation";
+import { mapPackage } from "../mappers/packages";
 
 const router = Router();
 
@@ -12,21 +12,49 @@ const router = Router();
  * found then the 'unknownobject' status code must be reported.
  */
 // GET /CFPackages/{sourcedId}
-router.get('/CFPackages/:sourcedId', validateSourcedId, async (req, res) => {
+router.get("/CFPackages/:sourcedId", validateSourcedId, async (req, res) => {
   try {
     const { sourcedId } = req.params;
 
     const cfPackage = await prisma.cFPackage.findUnique({
       where: { identifier: sourcedId },
       include: {
-        document: true,
+        document: {
+          include: {
+            subjects: true,
+            cfLicense: true,
+            packageUri: true,
+            cfItems: {
+              include: {
+                conceptKeywordsURI: true,
+                subjectURI: true,
+                cfItemTypeUri: true,
+                licenseURI: true,
+              },
+            },
+            cfAssociations: {
+              include: {
+                originNode: true,
+                destinationNode: true,
+              },
+            },
+          },
+        },
         cfConcepts: true,
         cfItemTypes: true,
         cfLicenses: true,
-        cfRubrics: true,
+        cfRubrics: {
+          include: {
+            cfRubricCriteria: {
+              include: {
+                CFRubricCriterionLevels: true,
+              },
+            },
+          },
+        },
         cfSubjects: true,
         cfAssociationGroupings: true,
-      }
+      },
     });
 
     if (!cfPackage) {
@@ -35,7 +63,7 @@ router.get('/CFPackages/:sourcedId', validateSourcedId, async (req, res) => {
 
     res.json(mapPackage(cfPackage));
   } catch (error) {
-    console.error('Error fetching package:', error);
+    console.error("Error fetching package:", error);
     errors.internalError(res);
   }
 });

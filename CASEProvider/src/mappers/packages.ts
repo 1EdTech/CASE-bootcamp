@@ -1,23 +1,21 @@
 import { mapAssociation } from "./associations";
-import { mapAssociationGrouping, mapConcepts, mapItemTypes, mapSubjects } from "./definitions";
+import { mapAssociationGrouping, mapConcept, mapItemType, mapLicense, mapSubject } from "./definitions";
 import { mapDocument } from "./documents";
 import { mapItem } from "./items";
+import { mapRubric } from "./rubrics";
 
 export function mapPackage(record: any) {
     return {
-        CFDocument: mapDocument(record.cfDocument),
-        CFItems: record.cfItems.map(mapItem),
-        CFAssociations: record.cfAssociations.map(mapAssociation),
+        CFDocument: mapDocument(record.document),
+        CFItems: record.document.cfItems.map(mapItem),
+        CFAssociations: record.document.cfAssociations.map(mapAssociation),
         CFDefinitions: {
-            CFConcepts: mapConcepts(record.cfConcepts),
-            CFSubjects: mapSubjects(record.cfSubjects),
-            CFLicenses: mapSubjects(record.cfLicenses),
-            CFItemTypes: mapItemTypes(record.cfItemTypes),
+            CFConcepts: record.cfConcepts.map(mapConcept),
+            CFSubjects: record.cfSubjects.map(mapSubject),
+            CFLicenses: record.cfLicenses.map(mapLicense),
+            CFItemTypes: record.cfItemTypes.map(mapItemType),
             CFAssociationGroupings: record.cfAssociationGroupings.map(mapAssociationGrouping)
         },
-        CFRubrics: {
-
-        }
-
+        CFRubrics: record.cfRubrics.map(mapRubric),
     }
 }
