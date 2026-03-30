@@ -81,13 +81,7 @@ router.get("/CFDocuments", async (req, res) => {
     console.log("Order by options:", orderByOptions);
 
     // field selection. We should validate fields to avoid SQL injection and translate them to actual DB columns
-    const select = fields
-      ? (fields as string[]).reduce((acc: any, field: string) => {
-          acc[field] = true;
-          return acc;
-        }, {})
-      : undefined;
-
+    const select = (fields as string) ? (fields as string).split(',') : undefined;
     console.log("Select options:", select);
 
     const documents = await prisma.cFDocument.findMany({
@@ -103,7 +97,7 @@ router.get("/CFDocuments", async (req, res) => {
       },
     });
 
-    res.json(mapDocuments(documents));
+    res.json(mapDocuments(documents, select));
   } catch (error) {
     console.error("Error fetching documents:", error);
     errors.internalError(res);
