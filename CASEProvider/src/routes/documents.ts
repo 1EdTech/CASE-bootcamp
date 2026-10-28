@@ -2,6 +2,11 @@ import { Router } from "express";
 import prisma from "../lib/prisma";
 import { errors } from "../lib/errors";
 import { validateSourcedId } from "../lib/validation";
+import {
+  buildPaginationHeaders,
+  isPaginationError,
+  parsePagination,
+} from "../lib/pagination";
 import { mapDocument, mapDocuments } from "../mappers/documents";
 import { constructFilter } from "../lib/filter";
 
@@ -45,15 +50,15 @@ router.get("/CFDocuments/:sourcedId", validateSourcedId, async (req, res) => {
 // GET /CFDocuments - List all documents
 router.get("/CFDocuments", async (req, res) => {
   try {
-    const {
-      limit = "100",
-      offset = "0",
-      sort,
-      orderBy = "asc",
-      filter,
-      fields,
-    } = req.query;
+    const { sort, orderBy = "asc", filter, fields } = req.query;
 
+    const pagination = parsePagination(req.query);
+    if (isPaginationError(pagination)) {
+      errors.invalidQueryParameter(res, pagination.field);
+      return;
+    }
+
+    const { limit, offset } = pagination;
     let query = {};
 
     console.log("Query parameters:", req.query);
@@ -81,22 +86,28 @@ router.get("/CFDocuments", async (req, res) => {
     console.log("Order by options:", orderByOptions);
 
     // field selection. We should validate fields to avoid SQL injection and translate them to actual DB columns
-    const select = (fields as string) ? (fields as string).split(',') : undefined;
+    const select = (fields as string)
+      ? (fields as string).split(",")
+      : undefined;
     console.log("Select options:", select);
 
-    const documents = await prisma.cFDocument.findMany({
-      where: query,
-      skip: parseInt(offset as string, 10),
-      take: parseInt(limit as string, 10),
-      orderBy: orderByOptions,
-      include: {
-        subjects: true,
-        cfLicense: true,
-        cfPackage: true,
-        packageUri: true,
-      },
-    });
+    const [documents, total] = await Promise.all([
+      prisma.cFDocument.findMany({
+        where: query,
+        skip: offset,
+        take: limit,
+        orderBy: orderByOptions,
+        include: {
+          subjects: true,
+          cfLicense: true,
+          cfPackage: true,
+          packageUri: true,
+        },
+      }),
+      prisma.cFDocument.count({ where: query }),
+    ]);
 
+    res.setHeaders(buildPaginationHeaders(req, { limit, offset }, total));
     res.json(mapDocuments(documents, select));
   } catch (error) {
     console.error("Error fetching documents:", error);
