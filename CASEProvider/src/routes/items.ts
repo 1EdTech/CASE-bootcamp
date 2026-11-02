@@ -2,6 +2,7 @@ import { Router } from 'express';
 import prisma from '../lib/prisma';
 import { errors } from '../lib/errors';
 import { validateSourcedId } from '../lib/validation';
+import { mapItem } from '../mappers/items';
 
 const router = Router();
 
@@ -30,7 +31,7 @@ router.get('/CFItems/:sourcedId', validateSourcedId, async (req, res) => {
       return errors.notFound(res);
     }
 
-    res.json(item);
+    res.json(mapItem(item));
   } catch (error) {
     console.error('Error fetching item:', error);
     errors.internalError(res);
