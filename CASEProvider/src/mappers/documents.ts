@@ -1,10 +1,10 @@
-export function mapDocuments(records: any[], selectedFields?: string[]) {
+export function mapDocuments(records: any[], includeCfPackageURI: boolean = true, selectedFields?: string[]) {
   return {
-    CFDocuments: records.map(record => mapDocument(record, selectedFields)),
+    CFDocuments: records.map(record => mapDocument(record, includeCfPackageURI, selectedFields)),
   };
 }
 
-export function mapDocument(record: any, selectedFields?: string[]) {
+export function mapDocument(record: any, includeCfPackageURI: boolean = true, selectedFields?: string[]) {
   if (!selectedFields || selectedFields.length === 0) {
     let document: any = {
       identifier: record.identifier,
@@ -28,12 +28,14 @@ export function mapDocument(record: any, selectedFields?: string[]) {
         ? record.statusEndDate.toISOString()
         : null,
       notes: record.notes,
-      CFPackageURI: {
+    };
+    if (includeCfPackageURI) {
+      document.CFPackageURI= {
         identifier: record.packageUri?.identifier,
         uri: record.packageUri?.uri,
         title: record.packageUri?.title,
-      },
-    };
+      };
+    }
     if (record.cfLicense) {
       document.licenseURI = {
         identifier: record.cfLicense.identifier,

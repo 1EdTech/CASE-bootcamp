@@ -1,4 +1,4 @@
-export function mapItem(record: any) {
+export function mapItem(record: any, includeCFDocumentUri: boolean = true) {
     let item : any = {
         identifier: record.identifier,
         uri: record.uri,
@@ -16,12 +16,14 @@ export function mapItem(record: any) {
         statusStartDate: record.statusStartDate ? record.statusStartDate.toISOString() : null,
         statusEndDate: record.statusEndDate ? record.statusEndDate.toISOString() : null,
         lastChangeDateTime: record.lastChangeDateTime.toISOString(),
-        CFDocumentURI: {
+    };
+    if (includeCFDocumentUri) {
+        item.CFDocumentURI= {
             identifier: record.cfDocument?.identifier,
             uri: record.cfDocument?.uri,
             title: record.cfDocument?.title,
-        }
-    };
+        };
+    }
 
     if (record.subjectURI) {
         item.subjectURI = record.subjectURI.map((subj: any) => ({
@@ -32,11 +34,12 @@ export function mapItem(record: any) {
     }
 
     if (record.conceptKeywordsURI) {
-        item.conceptKeywordsURI = record.conceptKeywordsURI.map((subj: any) => ({
+        const conceptKeywordsURIs = record.conceptKeywordsURI.map((subj: any) => ({
             identifier: subj.identifier,
             uri: subj.uri,
             title: subj.title,
-        }));
+        }))
+        item.conceptKeywordsURI = conceptKeywordsURIs?.shift();
     }
 
     if (record.cfItemTypeUri) {

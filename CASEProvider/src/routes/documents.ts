@@ -108,7 +108,7 @@ router.get("/CFDocuments", async (req, res) => {
     ]);
 
     res.setHeaders(buildPaginationHeaders(req, { limit, offset }, total));
-    res.json(mapDocuments(documents, select));
+    res.json(mapDocuments(documents, true, select));
   } catch (error) {
     console.error("Error fetching documents:", error);
     errors.internalError(res);

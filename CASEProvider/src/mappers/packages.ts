@@ -6,8 +6,8 @@ import { mapRubric } from "./rubrics";
 
 export function mapPackage(record: any) {
     return {
-        CFDocument: mapDocument(record.document),
-        CFItems: record.document.cfItems.map(mapItem),
+        CFDocument: mapDocument(record.document, false),
+        CFItems: record.document.cfItems.map((i: any) => mapItem(i, false)),
         CFAssociations: record.document.cfAssociations.map(mapAssociation),
         CFDefinitions: {
             CFConcepts: record.cfConcepts.map(mapConcept),
