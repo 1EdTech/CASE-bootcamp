@@ -7,7 +7,7 @@ function removeNulls(obj: any): any {
   } else if (obj && typeof obj === 'object') {
     return Object.fromEntries(
       Object.entries(obj)
-        .filter(([_, v]) => v !== null)
+        .filter(([_, v]) => v !== undefined && v !== null)
         .map(([k, v]) => [k, removeNulls(v)])
     );
   }
