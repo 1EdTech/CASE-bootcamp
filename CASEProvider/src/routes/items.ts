@@ -37,21 +37,4 @@ router.get('/CFItems/:sourcedId', validateSourcedId, async (req, res) => {
   }
 });
 
-// GET /CFItems - List all items
-router.get('/CFItems', async (req, res) => {
-  try {
-    const { limit = '100', offset = '0' } = req.query;
-
-    const items = await prisma.cFItem.findMany({
-      take: parseInt(limit as string),
-      skip: parseInt(offset as string)
-    });
-
-    res.json({ CFItems: items });
-  } catch (error) {
-    console.error('Error fetching items:', error);
-    errors.internalError(res);
-  }
-});
-
 export { router as itemsRouter };
